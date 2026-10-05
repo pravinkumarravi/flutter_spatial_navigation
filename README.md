@@ -1,3 +1,5 @@
+![flutter_spatial_navigation](assets/flutter_spatial_navigation_banner.png)
+
 # Spatial D-pad Navigation for Flutter TV
 
 Spatial D-pad navigation and focus management for Flutter applications designed for TV remotes, gamepads, and directional input.
