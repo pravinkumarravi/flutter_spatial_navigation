@@ -35,14 +35,11 @@ class TVSpatialTraversalPolicy extends FocusTraversalPolicy {
 
     final from = currentNode.rect;
     FocusNode? best;
-    var bestScore = double.infinity;
 
     for (final candidate in scope.traversalDescendants) {
       if (identical(candidate, currentNode)) continue;
       if (!candidate.canRequestFocus || candidate.context == null) continue;
-      final score = _score(from, candidate.rect, direction);
-      if (score != null && score < bestScore) {
-        bestScore = score;
+      if (_isBetterCandidate(from, candidate.rect, best?.rect, direction)) {
         best = candidate;
       }
     }
@@ -91,6 +88,60 @@ class TVSpatialTraversalPolicy extends FocusTraversalPolicy {
     return best;
   }
 
+  bool _isCandidate(Rect from, Rect to, TraversalDirection direction) {
+    if (!_isAhead(from, to, direction)) return false;
+
+    // In-beam candidates are always valid candidates.
+    if (_isInBeam(from, to, direction)) return true;
+
+    // Out-of-beam candidates must strictly progress along the movement axis
+    // without overlapping on that axis.
+    final majorRaw = _majorDistanceRaw(from, to, direction);
+    if (majorRaw <= 0) return false;
+
+    // Out-of-beam candidates must not deviate sideways more than their
+    // progress along the movement axis (cone constraint).
+    final gap = _crossAxisGap(from, to, direction);
+    return majorRaw >= gap;
+  }
+
+  bool _isInBeam(Rect from, Rect to, TraversalDirection direction) {
+    return _crossAxisGap(from, to, direction) == 0;
+  }
+
+  double _crossAxisGap(Rect from, Rect to, TraversalDirection direction) {
+    final horizontal = direction == TraversalDirection.left ||
+        direction == TraversalDirection.right;
+    return horizontal
+        ? _gap(from.top, from.bottom, to.top, to.bottom)
+        : _gap(from.left, from.right, to.left, to.right);
+  }
+
+  bool _isBetterCandidate(
+    Rect from,
+    Rect candidate,
+    Rect? best,
+    TraversalDirection direction,
+  ) {
+    if (!_isCandidate(from, candidate, direction)) return false;
+    if (best == null) return true;
+
+    final candidateInBeam = _isInBeam(from, candidate, direction);
+    final bestInBeam = _isInBeam(from, best, direction);
+
+    // Android FocusFinder beamBeats: in-beam candidates always beat
+    // out-of-beam candidates.
+    if (candidateInBeam && !bestInBeam) return true;
+    if (bestInBeam && !candidateInBeam) return false;
+
+    final candidateScore = _score(from, candidate, direction);
+    final bestScore = _score(from, best, direction);
+    if (candidateScore == null) return false;
+    if (bestScore == null) return true;
+
+    return candidateScore < bestScore;
+  }
+
   /// Returns null when [to] is not a valid candidate for [direction].
   double? _score(Rect from, Rect to, TraversalDirection direction) {
     if (!_isAhead(from, to, direction)) return null;
@@ -98,10 +149,7 @@ class TVSpatialTraversalPolicy extends FocusTraversalPolicy {
     final horizontal = direction == TraversalDirection.left ||
         direction == TraversalDirection.right;
 
-    // Gap is 0 when the rects overlap on the cross axis (candidate in beam).
-    final gap = horizontal
-        ? _gap(from.top, from.bottom, to.top, to.bottom)
-        : _gap(from.left, from.right, to.left, to.right);
+    final gap = _crossAxisGap(from, to, direction);
     final centerOffset = horizontal
         ? (to.center.dy - from.center.dy).abs()
         : (to.center.dx - from.center.dx).abs();
@@ -125,14 +173,17 @@ class TVSpatialTraversalPolicy extends FocusTraversalPolicy {
     };
   }
 
-  double _majorDistance(Rect from, Rect to, TraversalDirection direction) {
-    final distance = switch (direction) {
+  double _majorDistanceRaw(Rect from, Rect to, TraversalDirection direction) {
+    return switch (direction) {
       TraversalDirection.right => to.left - from.right,
       TraversalDirection.left => from.left - to.right,
       TraversalDirection.down => to.top - from.bottom,
       TraversalDirection.up => from.top - to.bottom,
     };
-    return math.max(0.0, distance);
+  }
+
+  double _majorDistance(Rect from, Rect to, TraversalDirection direction) {
+    return math.max(0.0, _majorDistanceRaw(from, to, direction));
   }
 
   /// Distance between two 1-D ranges; 0 if they overlap.
