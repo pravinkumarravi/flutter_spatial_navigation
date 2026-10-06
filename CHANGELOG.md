@@ -1,3 +1,9 @@
+# 0.1.1
+
+* Fix scroll position loss when moving focus across rows by introducing `defaultTVRequestFocusCallback` in `TVSpatialTraversalPolicy`.
+* Add `AutomaticKeepAliveClientMixin` and `PageStorageKey` to `TVLazyList` to prevent state disposal inside `SliverList` and `CustomScrollView`.
+* Synchronize keyline scrolling in `TVLazyList` when focus enters an item from vertical navigation or group restoration.
+
 # 0.1.0
 
 * Initial public release.

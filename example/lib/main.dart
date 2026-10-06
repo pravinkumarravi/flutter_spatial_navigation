@@ -275,9 +275,11 @@ class _TVHomeScreenState extends State<TVHomeScreen> {
 
           // Enclosing TVFocusGroup remembers last focused card when leaving & returning
           TVFocusGroup(
+            key: ValueKey('focus_group_${section.title}'),
             child: SizedBox(
               height: rowHeight,
               child: TVLazyList(
+                key: ValueKey('lazy_list_${section.title}'),
                 itemCount: section.items.length,
                 itemExtent: itemExtent,
                 focusAlignment: 0.0,

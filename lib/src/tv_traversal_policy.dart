@@ -21,8 +21,23 @@ enum TVEdgeBehavior {
 class TVSpatialTraversalPolicy extends FocusTraversalPolicy {
   const TVSpatialTraversalPolicy({
     this.edgeBehavior = TVEdgeBehavior.escape,
-    super.requestFocusCallback,
+    super.requestFocusCallback = defaultTVRequestFocusCallback,
   });
+
+  /// TV-friendly request focus callback that requests focus directly without
+  /// triggering Flutter's mobile default [Scrollable.ensureVisible] (which centers
+  /// items with alignment 0.5 and zero duration, causing row scroll offsets to reset).
+  /// This allows TV components like [TVFocusable] and [TVLazyList] to manage their
+  /// own keyline scrolling.
+  static void defaultTVRequestFocusCallback(
+    FocusNode node, {
+    ScrollPositionAlignmentPolicy? alignmentPolicy,
+    double? alignment,
+    Duration? duration,
+    Curve? curve,
+  }) {
+    node.requestFocus();
+  }
 
   final TVEdgeBehavior edgeBehavior;
 

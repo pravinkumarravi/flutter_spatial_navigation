@@ -632,5 +632,79 @@ void main() {
       expect(moved, isTrue);
       expect(nodeB.hasFocus, isTrue);
     });
+
+    testWidgets(
+        'TVLazyList preserves scroll position and keyline alignment when switching rows',
+        (tester) async {
+      final scrollCtrl0 = ScrollController();
+      final scrollCtrl1 = ScrollController();
+
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: FocusTraversalGroup(
+              policy: const TVSpatialTraversalPolicy(),
+              child: Column(
+                children: [
+                  TVFocusGroup(
+                    child: SizedBox(
+                      height: 100,
+                      child: TVLazyList(
+                        controller: scrollCtrl0,
+                        itemCount: 10,
+                        itemExtent: 100,
+                        focusAlignment: 0.0,
+                        autofocus: true,
+                        itemBuilder: (ctx, i, f) => SizedBox(
+                          width: 100,
+                          child: Text('R0-I$i-$f'),
+                        ),
+                      ),
+                    ),
+                  ),
+                  TVFocusGroup(
+                    child: SizedBox(
+                      height: 100,
+                      child: TVLazyList(
+                        controller: scrollCtrl1,
+                        itemCount: 10,
+                        itemExtent: 100,
+                        focusAlignment: 0.0,
+                        itemBuilder: (ctx, i, f) => SizedBox(
+                          width: 100,
+                          child: Text('R1-I$i-$f'),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+      expect(scrollCtrl0.offset, equals(0.0));
+
+      // Move right twice on Row 0 (scroll offset becomes 200.0)
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pumpAndSettle();
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowRight);
+      await tester.pumpAndSettle();
+      expect(scrollCtrl0.offset, equals(200.0));
+      expect(FocusManager.instance.primaryFocus?.debugLabel, equals('tv_item_2'));
+
+      // Move down to Row 1
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowDown);
+      await tester.pumpAndSettle();
+      expect(FocusManager.instance.primaryFocus?.debugLabel, equals('tv_item_0'));
+
+      // Move up back to Row 0: Row 0 must restore card 2 AND preserve scroll offset 200.0
+      await tester.sendKeyEvent(LogicalKeyboardKey.arrowUp);
+      await tester.pumpAndSettle();
+      expect(FocusManager.instance.primaryFocus?.debugLabel, equals('tv_item_2'));
+      expect(scrollCtrl0.offset, equals(200.0));
+    });
   });
 }

@@ -38,7 +38,11 @@ class TVLazyList extends StatefulWidget {
   State<TVLazyList> createState() => _TVLazyListState();
 }
 
-class _TVLazyListState extends State<TVLazyList> {
+class _TVLazyListState extends State<TVLazyList>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   ScrollController? _internalScroll;
   ScrollController get _scroll => widget.controller ?? (_internalScroll ??= ScrollController());
   final _nodes = <int, FocusNode>{}; // only currently-built items
@@ -147,11 +151,13 @@ class _TVLazyListState extends State<TVLazyList> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Focus(
       canRequestFocus: false,
       skipTraversal: true,
       onKeyEvent: _onKey,
       child: ListView.builder(
+        key: widget.key != null ? PageStorageKey(widget.key) : null,
         controller: _scroll,
         scrollDirection: widget.scrollDirection,
         padding: widget.padding,
@@ -164,7 +170,10 @@ class _TVLazyListState extends State<TVLazyList> {
           autofocus: widget.autofocus && i == _index,
           onCreate: _register,
           onDispose: _unregister,
-          onFocused: (idx) => _index = idx,
+          onFocused: (idx) {
+            _index = idx;
+            _scrollTo(idx);
+          },
           onSelect: widget.onSelect,
           builder: widget.itemBuilder,
         ),
