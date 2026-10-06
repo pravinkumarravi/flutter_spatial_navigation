@@ -124,12 +124,18 @@ class _TVFocusableState extends State<TVFocusable> {
     if (value) {
       TVFocusNotification(_effectiveFocusNode).dispatch(context);
       if (widget.scrollOnFocus) {
-        Scrollable.ensureVisible(
-          context,
-          alignment: widget.scrollAlignment,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeOut,
-        );
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!mounted || !_focused) return;
+          final renderObject = context.findRenderObject();
+          if (renderObject != null && renderObject.attached) {
+            Scrollable.ensureVisible(
+              context,
+              alignment: widget.scrollAlignment,
+              duration: const Duration(milliseconds: 200),
+              curve: Curves.easeOut,
+            );
+          }
+        });
       }
     }
   }
