@@ -1,0 +1,403 @@
+import 'package:flutter/material.dart';
+
+class MediaItem {
+  final String id;
+  final String title;
+  final String category;
+  final String rating;
+  final String year;
+  final String duration;
+  final String badge;
+  final String synopsis;
+  final Color accentColor;
+  final Color secondaryColor;
+  final IconData icon;
+  final double? progress;
+  final int? rank;
+
+  const MediaItem({
+    required this.id,
+    required this.title,
+    required this.category,
+    required this.rating,
+    required this.year,
+    required this.duration,
+    required this.badge,
+    required this.synopsis,
+    required this.accentColor,
+    required this.secondaryColor,
+    required this.icon,
+    this.progress,
+    this.rank,
+  });
+}
+
+class MediaSection {
+  final String title;
+  final String subtitle;
+  final List<MediaItem> items;
+  final bool isWide;
+  final bool showRank;
+
+  const MediaSection({
+    required this.title,
+    required this.subtitle,
+    required this.items,
+    this.isWide = false,
+    this.showRank = false,
+  });
+}
+
+class SampleTvData {
+  static final List<MediaItem> heroFeatured = [
+    const MediaItem(
+      id: 'hero-1',
+      title: 'Cosmic Odysseys: Beyond Earth',
+      category: 'Sci-Fi • Adventure • Space',
+      rating: '9.3',
+      year: '2025',
+      duration: '2h 34m',
+      badge: '4K ULTRA HD',
+      synopsis:
+          'When an enigmatic transmission arrives from the edge of the galaxy, a crew of deep-space pioneers embarks on an uncharted quantum expedition to uncover humanity\'s origins.',
+      accentColor: Color(0xFF6366F1),
+      secondaryColor: Color(0xFF06B6D4),
+      icon: Icons.rocket_launch_rounded,
+    ),
+  ];
+
+  static final List<MediaItem> continueWatching = [
+    const MediaItem(
+      id: 'cw-1',
+      title: 'Neon Cyberpunk 2099',
+      category: 'Action • Cyberpunk',
+      rating: '8.8',
+      year: '2024',
+      duration: 'S1:E5 • 48m',
+      badge: 'RESUME',
+      synopsis: 'A cybernetic mercenary discovers a rogue AI deep beneath Neo-Tokyo.',
+      accentColor: Color(0xFFEC4899),
+      secondaryColor: Color(0xFF8B5CF6),
+      icon: Icons.flash_on_rounded,
+      progress: 0.72,
+    ),
+    const MediaItem(
+      id: 'cw-2',
+      title: 'The Deep Abyss',
+      category: 'Thriller • Mystery',
+      rating: '8.5',
+      year: '2024',
+      duration: 'S2:E3 • 55m',
+      badge: 'RESUME',
+      synopsis: 'Researchers at the Mariana Trench discover ancient subsea structures.',
+      accentColor: Color(0xFF0EA5E9),
+      secondaryColor: Color(0xFF14B8A6),
+      icon: Icons.waves_rounded,
+      progress: 0.45,
+    ),
+    const MediaItem(
+      id: 'cw-3',
+      title: 'Shadow Realm Chronicles',
+      category: 'Fantasy • Mythic',
+      rating: '9.0',
+      year: '2025',
+      duration: 'S1:E8 • 62m',
+      badge: 'RESUME',
+      synopsis: 'Two realm-walkers battle to close an abyssal rift threatening both worlds.',
+      accentColor: Color(0xFFF59E0B),
+      secondaryColor: Color(0xFFEF4444),
+      icon: Icons.shield_rounded,
+      progress: 0.88,
+    ),
+    const MediaItem(
+      id: 'cw-4',
+      title: 'Quantum Paradox',
+      category: 'Sci-Fi • Mind-Bender',
+      rating: '8.7',
+      year: '2024',
+      duration: '1h 56m',
+      badge: 'RESUME',
+      synopsis: 'A particle physicist accidentally splits their timeline into three realities.',
+      accentColor: Color(0xFF8B5CF6),
+      secondaryColor: Color(0xFF3B82F6),
+      icon: Icons.all_inclusive_rounded,
+      progress: 0.30,
+    ),
+    const MediaItem(
+      id: 'cw-5',
+      title: 'Speedway Horizon',
+      category: 'Motorsport • Drama',
+      rating: '8.4',
+      year: '2023',
+      duration: '2h 10m',
+      badge: 'RESUME',
+      synopsis: 'An underdog GT driver challenges the global hypercar racing championship.',
+      accentColor: Color(0xFFEF4444),
+      secondaryColor: Color(0xFFF97316),
+      icon: Icons.sports_motorsports_rounded,
+      progress: 0.60,
+    ),
+  ];
+
+  static final List<MediaItem> trendingMovies = [
+    const MediaItem(
+      id: 'tr-1',
+      title: 'Dune: Echoes of Eternity',
+      category: 'Sci-Fi • Epic',
+      rating: '9.1',
+      year: '2025',
+      duration: '2h 45m',
+      badge: 'TOP 1',
+      synopsis: 'The fate of the desert planet reaches a cataclysmic turning point.',
+      accentColor: Color(0xFFD97706),
+      secondaryColor: Color(0xFFB45309),
+      icon: Icons.terrain_rounded,
+      rank: 1,
+    ),
+    const MediaItem(
+      id: 'tr-2',
+      title: 'Midnight Detective',
+      category: 'Neo-Noir • Crime',
+      rating: '8.7',
+      year: '2024',
+      duration: '2h 08m',
+      badge: 'TOP 2',
+      synopsis: 'A rainy metropolis detective uncovers a syndicate controlling augmented memories.',
+      accentColor: Color(0xFF64748B),
+      secondaryColor: Color(0xFF334155),
+      icon: Icons.visibility_rounded,
+      rank: 2,
+    ),
+    const MediaItem(
+      id: 'tr-3',
+      title: 'Solar Flare',
+      category: 'Action • Thriller',
+      rating: '8.6',
+      year: '2025',
+      duration: '1h 58m',
+      badge: 'TOP 3',
+      synopsis: 'A global blackout triggers a pulse of high-stakes survival across the skies.',
+      accentColor: Color(0xFFF97316),
+      secondaryColor: Color(0xFFEA580C),
+      icon: Icons.wb_sunny_rounded,
+      rank: 3,
+    ),
+    const MediaItem(
+      id: 'tr-4',
+      title: 'Kingdom of Iron',
+      category: 'Medieval • Action',
+      rating: '8.9',
+      year: '2024',
+      duration: '2h 24m',
+      badge: 'TOP 4',
+      synopsis: 'An exiled knight returns to reclaim a besieged fortress in the frozen north.',
+      accentColor: Color(0xFF78716C),
+      secondaryColor: Color(0xFF44403C),
+      icon: Icons.castle_rounded,
+      rank: 4,
+    ),
+    const MediaItem(
+      id: 'tr-5',
+      title: 'Aetheria: Sky City',
+      category: 'Fantasy • Adventure',
+      rating: '8.8',
+      year: '2025',
+      duration: '2h 15m',
+      badge: 'TOP 5',
+      synopsis: 'Airship captains compete for ancient energy crystals floating above the clouds.',
+      accentColor: Color(0xFF06B6D4),
+      secondaryColor: Color(0xFF0284C7),
+      icon: Icons.cloud_rounded,
+      rank: 5,
+    ),
+    const MediaItem(
+      id: 'tr-6',
+      title: 'The Silent Protocol',
+      category: 'Espionage • Tech',
+      rating: '8.5',
+      year: '2024',
+      duration: '2h 02m',
+      badge: 'TOP 6',
+      synopsis: 'An underground cryptographer races against military satellites.',
+      accentColor: Color(0xFF10B981),
+      secondaryColor: Color(0xFF047857),
+      icon: Icons.security_rounded,
+      rank: 6,
+    ),
+    const MediaItem(
+      id: 'tr-7',
+      title: 'Vortex Protocol',
+      category: 'Sci-Fi • Thriller',
+      rating: '8.4',
+      year: '2024',
+      duration: '2h 11m',
+      badge: 'TOP 7',
+      synopsis: 'Time spirals backward each hour during an experimental orbital test.',
+      accentColor: Color(0xFF8B5CF6),
+      secondaryColor: Color(0xFF6D28D9),
+      icon: Icons.cyclone_rounded,
+      rank: 7,
+    ),
+  ];
+
+  static final List<MediaItem> blockbusterMovies = [
+    const MediaItem(
+      id: 'bb-1',
+      title: 'Interstellar Horizon',
+      category: 'Sci-Fi • Masterpiece',
+      rating: '9.2',
+      year: '2024',
+      duration: '2h 49m',
+      badge: '4K HDR',
+      synopsis: 'Astronauts navigate through an artificial wormhole in search of a habitable sanctuary.',
+      accentColor: Color(0xFF3B82F6),
+      secondaryColor: Color(0xFF1D4ED8),
+      icon: Icons.explore_rounded,
+    ),
+    const MediaItem(
+      id: 'bb-2',
+      title: 'Gladiator: Crimson Arena',
+      category: 'Action • Historical',
+      rating: '8.8',
+      year: '2024',
+      duration: '2h 32m',
+      badge: 'IMAX',
+      synopsis: 'Honor, betrayal, and vengeance collide in the supreme coliseum of Rome.',
+      accentColor: Color(0xFFDC2626),
+      secondaryColor: Color(0xFF991B1B),
+      icon: Icons.shield_moon_rounded,
+    ),
+    const MediaItem(
+      id: 'bb-3',
+      title: 'Aurora Borealis',
+      category: 'Nature • Cinematic',
+      rating: '9.0',
+      year: '2025',
+      duration: '1h 45m',
+      badge: 'DOLBY VISION',
+      synopsis: 'A breathtaking 8K cinematic journey across the Arctic wilderness and polar skies.',
+      accentColor: Color(0xFF10B981),
+      secondaryColor: Color(0xFF059669),
+      icon: Icons.nature_people_rounded,
+    ),
+    const MediaItem(
+      id: 'bb-4',
+      title: 'Velocity X: Hyperdrift',
+      category: 'Action • Racing',
+      rating: '8.3',
+      year: '2024',
+      duration: '2h 05m',
+      badge: '4K UHD',
+      synopsis: 'Illegal gravity-defying vehicle races on suspended magnetic superhighways.',
+      accentColor: Color(0xFFF59E0B),
+      secondaryColor: Color(0xFFD97706),
+      icon: Icons.electric_bolt_rounded,
+    ),
+    const MediaItem(
+      id: 'bb-5',
+      title: 'Samurai of the Mist',
+      category: 'Action • Martial Arts',
+      rating: '8.9',
+      year: '2023',
+      duration: '2h 16m',
+      badge: 'MASTERPIECE',
+      synopsis: 'A lone master defends a mountain temple from a clan of ruthless warlords.',
+      accentColor: Color(0xFFE11D48),
+      secondaryColor: Color(0xFFBE123C),
+      icon: Icons.sports_martial_arts_rounded,
+    ),
+    const MediaItem(
+      id: 'bb-6',
+      title: 'Ghost City Protocol',
+      category: 'Thriller • Mystery',
+      rating: '8.5',
+      year: '2024',
+      duration: '1h 59m',
+      badge: '4K',
+      synopsis: 'An abandoned smart city awakens on its own, locking all entrances.',
+      accentColor: Color(0xFF6366F1),
+      secondaryColor: Color(0xFF4338CA),
+      icon: Icons.apartment_rounded,
+    ),
+  ];
+
+  static final List<MediaItem> originalSeries = [
+    const MediaItem(
+      id: 'os-1',
+      title: 'Silicon Dynasty',
+      category: 'Tech • Drama',
+      rating: '9.1',
+      year: '2025',
+      duration: '4 Seasons',
+      badge: 'ORIGINAL',
+      synopsis: 'Inside the billion-dollar war between rival quantum computing empires.',
+      accentColor: Color(0xFF0284C7),
+      secondaryColor: Color(0xFF0369A1),
+      icon: Icons.memory_rounded,
+    ),
+    const MediaItem(
+      id: 'os-2',
+      title: 'Dark Forest Protocol',
+      category: 'Sci-Fi • Cosmic Horror',
+      rating: '9.4',
+      year: '2025',
+      duration: '2 Seasons',
+      badge: 'HOT SERIES',
+      synopsis: 'When radio signals reveal silent alien civilizations, fear engulfs the planet.',
+      accentColor: Color(0xFF7C3AED),
+      secondaryColor: Color(0xFF5B21B6),
+      icon: Icons.park_rounded,
+    ),
+    const MediaItem(
+      id: 'os-3',
+      title: 'The Alchemist Guild',
+      category: 'Fantasy • Mystery',
+      rating: '8.7',
+      year: '2024',
+      duration: '3 Seasons',
+      badge: 'ORIGINAL',
+      synopsis: 'Hidden guilds in Victorian London discover ancient elemental transmutation.',
+      accentColor: Color(0xFFD97706),
+      secondaryColor: Color(0xFF92400E),
+      icon: Icons.auto_fix_high_rounded,
+    ),
+    const MediaItem(
+      id: 'os-4',
+      title: 'Red Planet Colony',
+      category: 'Sci-Fi • Survival',
+      rating: '8.6',
+      year: '2024',
+      duration: '1 Season',
+      badge: 'NEW',
+      synopsis: 'The first generation of Martian settlers struggles against brutal sandstorms.',
+      accentColor: Color(0xFFEA580C),
+      secondaryColor: Color(0xFFC2410C),
+      icon: Icons.public_rounded,
+    ),
+  ];
+
+  static List<MediaSection> getAllSections() => [
+        MediaSection(
+          title: 'Continue Watching',
+          subtitle: 'Pick up right where you left off',
+          items: continueWatching,
+          isWide: true,
+        ),
+        MediaSection(
+          title: 'Top 10 Today',
+          subtitle: 'Most watched movies & series globally',
+          items: trendingMovies,
+          showRank: true,
+        ),
+        MediaSection(
+          title: 'Blockbuster Movies',
+          subtitle: 'Cinema-grade entertainment in 4K HDR',
+          items: blockbusterMovies,
+        ),
+        MediaSection(
+          title: 'Award-Winning Originals',
+          subtitle: 'Critically acclaimed streaming series',
+          items: originalSeries,
+        ),
+      ];
+}

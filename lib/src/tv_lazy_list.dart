@@ -18,6 +18,7 @@ class TVLazyList extends StatefulWidget {
     this.initialIndex = 0,
     this.controller,
     this.scrollCacheExtent,
+    this.autofocus = false,
   });
 
   final int itemCount;
@@ -31,6 +32,7 @@ class TVLazyList extends StatefulWidget {
   final int initialIndex;
   final ScrollController? controller;
   final ScrollCacheExtent? scrollCacheExtent;
+  final bool autofocus;
 
   @override
   State<TVLazyList> createState() => _TVLazyListState();
@@ -54,6 +56,12 @@ class _TVLazyListState extends State<TVLazyList> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
         _scrollTo(_index, jump: true);
+      });
+    }
+    if (widget.autofocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _requestWhenBuilt(_index);
       });
     }
   }
@@ -153,6 +161,7 @@ class _TVLazyListState extends State<TVLazyList> {
         itemBuilder: (context, i) => _TVListItem(
           key: ValueKey(i),
           index: i,
+          autofocus: widget.autofocus && i == _index,
           onCreate: _register,
           onDispose: _unregister,
           onFocused: (idx) => _index = idx,
@@ -173,6 +182,7 @@ class _TVListItem extends StatefulWidget {
     required this.onFocused,
     required this.onSelect,
     required this.builder,
+    this.autofocus = false,
   });
 
   final int index;
@@ -181,6 +191,7 @@ class _TVListItem extends StatefulWidget {
   final void Function(int) onFocused;
   final void Function(int)? onSelect;
   final Widget Function(BuildContext, int, bool) builder;
+  final bool autofocus;
 
   @override
   State<_TVListItem> createState() => _TVListItemState();
@@ -206,6 +217,7 @@ class _TVListItemState extends State<_TVListItem> {
   Widget build(BuildContext context) {
     return TVFocusable(
       focusNode: _node,
+      autofocus: widget.autofocus,
       scrollOnFocus: false, // the list owns scrolling
       onFocusChange: (f) {
         if (f) widget.onFocused(widget.index);
