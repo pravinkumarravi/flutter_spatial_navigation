@@ -1,3 +1,8 @@
+# 0.1.2
+
+* Add `onKeyEvent` callback support to `TVFocusable` for custom key interception.
+* Improve select key handling and event consumption in `TVFocusable`.
+
 # 0.1.1
 
 * Fix scroll position loss when moving focus across rows by introducing `defaultTVRequestFocusCallback` in `TVSpatialTraversalPolicy`.

@@ -1,6 +1,6 @@
 name: flutter_spatial_navigation
 description: "Android Leanback-style spatial D-pad navigation, focus memory, and virtualized list management for Flutter TV, Android TV, and Fire TV apps."
-version: 0.1.1
+version: 0.1.2
 homepage: https://github.com/pravinkumarravi/flutter_spatial_navigation
 
 environment:

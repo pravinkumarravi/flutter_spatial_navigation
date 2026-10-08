@@ -20,6 +20,7 @@ class TVFocusable extends StatefulWidget {
     this.targetDown,
     this.targetLeft,
     this.targetRight,
+    this.onKeyEvent,
   });
 
   final Widget Function(BuildContext context, bool focused) builder;
@@ -59,6 +60,7 @@ class TVFocusable extends StatefulWidget {
   final FocusNode? Function()? targetDown;
   final FocusNode? Function()? targetLeft;
   final FocusNode? Function()? targetRight;
+  final KeyEventResult Function(FocusNode node, KeyEvent event)? onKeyEvent;
 
   @override
   State<TVFocusable> createState() => _TVFocusableState();
@@ -143,6 +145,11 @@ class _TVFocusableState extends State<TVFocusable> {
   KeyEventResult _handleKey(FocusNode node, KeyEvent event) {
     if (!widget.enabled) return KeyEventResult.ignored;
 
+    if (widget.onKeyEvent != null) {
+      final res = widget.onKeyEvent!(node, event);
+      if (res != KeyEventResult.ignored) return res;
+    }
+
     // ── Directional overrides ──────────────────────────────────────────────
     // Only act on key-down / key-repeat to avoid double-firing.
     if (event is KeyDownEvent || event is KeyRepeatEvent) {
@@ -177,11 +184,8 @@ class _TVFocusableState extends State<TVFocusable> {
       if (widget.onLongSelect == null) {
         if (event is KeyDownEvent && widget.onSelect != null) {
           widget.onSelect!();
-          return KeyEventResult.handled;
         }
-        return event is KeyDownEvent || event is KeyRepeatEvent
-            ? KeyEventResult.handled
-            : KeyEventResult.ignored;
+        return KeyEventResult.handled;
       }
 
       // When onLongSelect is provided, distinguish between tap and long press.
